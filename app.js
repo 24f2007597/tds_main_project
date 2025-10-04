@@ -1,5 +1,7 @@
 const express = require('express');
 const { createRepo } = require('./createRepo');
+const { addLicense } = require('./add-license');
+const { execSync } = require('child_process');
 const path = require('path');
 require('dotenv').config({ path : './secrets.env' });
 const app = express();
@@ -12,7 +14,13 @@ app.post('/create-repo', async (req, res) => {
     const { repoName } = req.body;
     try {
         const repo = await createRepo(token, repoName);
-        res.status(201).json(repo);
+        execSync(`git clone ${repo.clone_url}`);
+
+        const repoPath = path.join(process.cwd(), repoName);
+        process.chdir(repoPath);
+
+        addLicense();
+        res.status(201).json({ message: 'Repository created with MIT License successfully', repo: repo.html_url });
     } catch (error) {
         res.status(500).json({ error: 'Failed to create repository : ' + error.message });
     }

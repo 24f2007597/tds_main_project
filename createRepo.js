@@ -10,8 +10,9 @@ async function createRepo(token, repoName) {
             name: repoName,
             private: false
         });
+        
         console.log(`Repository ${repoName} created successfully.`);
-        return response.data;
+        return { html_url: response.data.html_url, clone_url: response.data.clone_url };
     } 
     catch (error) {
         console.error(`Error creating repository: ${error}`);
