@@ -7,38 +7,50 @@ const { generateCode } = require('./code-generator');
 const path = require('path');
 require('dotenv').config({ path : './secrets.env' });
 const app = express();
+const { decodeAttachments } = require('./decodeAttachments');
 
 const token = process.env.PAT_TOKEN;
 
 app.use(express.json());
 
-app.post('/create-repo', async (req, res) => {
-    const { repoName, project_brief } = req.body;
-    try {
-        await generateCode(project_brief, repoName);
-        //const repo = await createRepo(token, repoName);
-        //const parentDir = path.resolve(process.cwd(), '..');
-        //const cloneDir = path.join(parentDir, repoName);
+app.post('/create-app', async (req, res) => {
+    const { secret, task, brief, checks, attachments } = req.body;
+    repoName = task.toLowerCase().trim();
 
-        //execSync(`git clone "${repo.clone_url}" "${cloneDir}"`);
+    if (secret == process.env.STUDENT_SECRET) {
+        res.status(200).json({ message: 'Secret is valid' });
+        
+        ( async () => { 
+            try {
+                const parentDir = path.dirname(__dirname);
+                const cloneDir = path.join(parentDir, 'generated-apps', repoName);
 
-        //process.chdir(cloneDir);
+                await generateCode(brief, repoName, checks);
+                await decodeAttachments(attachments, repoName);
+                const repo = await createRepo(token, repoName);
+                const execOptions = { cwd: cloneDir}
 
-        //execSync('git init');
-        //execSync('git remote add origin "' + repo.clone_url + '"');
+                execSync('git init', execOptions);
+                execSync('git remote add origin "' + repo.clone_url + '"', execOptions);
 
-        //addLicense();
+                await addLicense();
 
-        //enablePages(new (require("@octokit/rest").Octokit)({ auth: token }), repo.owner, repo.name);
+                execSync('git add .', execOptions);
+                execSync('git commit -m "Commit with generated code"', execOptions);
+                execSync('git branch -M main', execOptions);
 
-        //execSync('git add .');
-        //execSync('git commit -m "Commit with generated code"');
-        //execSync('git push origin main');
+                execSync('git push -u origin main', execOptions);
+                console.log('Code pushed to GitHub repository.');
 
-        res.status(201).json({ message: 'Repository created with MIT License successfully', repo: repo.html_url });
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to create repository : ' + error.message });
+                await enablePages(new (require("@octokit/rest").Octokit)({ auth: token }), repo.owner, repo.name);
+
+            } catch (error) {
+                console.error(error);
+            }
+        })();
+        return;
     }
+    res.status(401).json({ message: 'Invalid secret' });
 });
 
 app.listen(3000, () => {

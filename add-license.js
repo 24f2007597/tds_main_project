@@ -1,5 +1,5 @@
 const fs = require('fs');
-const execsync = require('child_process').execSync;
+const path = require('path');
 
 function addLicense() {
     try {
@@ -25,14 +25,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.`;
+        const parentDir = path.dirname(__dirname);
+        const cloneDir = path.join(parentDir, 'generated-apps', repoName);
 
-        fs.writeFileSync(`LICENSE`, licenseText);
+        const filePath = path.join(cloneDir, 'LICENSE');
+
+        fs.writeFileSync(filePath, licenseText);
         console.log('License file created.');
-
-        execsync('git add LICENSE');
-        execsync('git commit -m "Add MIT License"');
-        execsync('git push origin main');
-        console.log('License file added and committed to the repository.');
     } 
     catch (error) {
         console.error(`Error adding license: ${error}`);

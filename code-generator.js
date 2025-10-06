@@ -6,35 +6,56 @@ require('dotenv').config({ path : './secrets.env' });
 const GEMINI_API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-async function generateCode(project_brief, repoName) {
-    const prompt = `You are an expert web developer in building single page applications.
-    Write a complete code snippet for the following project brief:\n\n${project_brief}\n\n
-    Write the code in Node.js. Return only the complete, clean code for a single page web application.
-    Please ensure the code is well-structured and includes comments for clarity.
-    
-    You MUST generate three files:
-    1. 'server.js': A Node.js backend using Express.
-    2. 'public/index.html': A minimal HTML shell for the frontend.
-    3. 'public/app.js': The frontend Vue code.
+async function generateCode(project_brief, repoName, check_procedures) {
+    const prompt = `You are an expert full-stack web developer specializing in creating runnable, single-page applications.
 
-    You MUST return the output as a single VALID JSON array of objects. Each object must have "fileName" and "code" keys. Use the 'public/' prefix for frontend files.
+Your task is to generate a complete project based on the brief and requirements below.
 
-    Example format:
-    [
-        {
-        "fileName": "server.js",
-        "code": "const express = require('express');..."
-        },
-        {
-        "fileName": "public/index.html",
-        "code": "<!DOCTYPE html>..."
-        },
-        {
-        "fileName": "public/app.js",
-        "code": "import React from 'https://esm.sh/react';..."
-        }
-    ]
-    `;
+## CONTEXT
+Project Brief:
+${project_brief}
+
+Evaluation Checks:
+The final application must be able to pass these checks:
+${check_procedures}
+
+## TECHNICAL REQUIREMENTS
+Architecture: The entire application MUST be static and run 100% in the client's browser.
+
+No Backend: There must be absolutely NO backend code. Do not use Node.js, Express, or any server-side logic.
+
+Dependencies: All external libraries like Vue.js, Bootstrap, or marked.js MUST be loaded from a CDN via SCRIPT or LINK tags in the HTML.
+
+Code Quality: The code must be clean, well-structured, and include comments for clarity.
+
+## FILES TO GENERATE
+You MUST generate the complete code for the following three files:
+
+index.html: The main HTML file.
+
+script.js: The client-side JavaScript logic.
+
+style.css: The CSS styles.
+
+## OUTPUT FORMAT
+You MUST return the output as a single, VALID JSON array of objects. Each object must have a fileName key and a code key.
+
+Example format:
+
+[
+{
+"fileName": "index.html",
+"code": "<!DOCTYPE html>..."
+},
+{
+"fileName": "script.js",
+"code": "document.addEventListener('DOMContentLoaded', () => {...});"
+},
+{
+"fileName": "style.css",
+"code": "body { font-family: sans-serif; }"
+}
+]`;
 
     const data = {
         contents: [
@@ -69,7 +90,8 @@ async function generateCode(project_brief, repoName) {
 
         const generatedFiles = JSON.parse(jsonString);
 
-        const outputDir = path.join(__dirname, 'generated-apps', repoName);
+        const parentDir = path.dirname(__dirname);
+        const outputDir = path.join(parentDir, 'generated-apps', repoName);
         await fs.promises.mkdir(outputDir, { recursive: true });
 
         for (const file of generatedFiles) {
