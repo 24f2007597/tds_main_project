@@ -1,6 +1,6 @@
 const {Octokit} = import("@octokit/rest");
 
-async function createRepo(token, repoName) {
+export async function createRepo(token, repoName) {
     const octokit = new Octokit({
         auth: token
     });
@@ -19,5 +19,3 @@ async function createRepo(token, repoName) {
         throw error;
     }
 }
-
-module.exports = { createRepo };

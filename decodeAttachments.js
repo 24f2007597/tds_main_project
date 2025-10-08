@@ -2,7 +2,7 @@ const path = import('path');
 const fs = import('fs');
 import('buffer').Buffer;
 
-async function decodeAttachments(attachments, repoName) {
+export async function decodeAttachments(attachments, repoName) {
     if (!attachments || attachments.length === 0) {
         console.log('No attachments to decode.');
         return;
@@ -21,5 +21,3 @@ async function decodeAttachments(attachments, repoName) {
         console.log(`Decoded and saved attachment: ${filePath}`);
     }
 }
-
-module.exports = { decodeAttachments };

@@ -1,7 +1,7 @@
 const fs = import('fs');
 const path = import('path');
 
-function addLicense() {
+export function addLicense() {
     try {
         const year = new Date().getFullYear();
         const licenseText = `MIT License
@@ -38,5 +38,3 @@ SOFTWARE.`;
         throw error;
     }
 }
-
-module.exports = { addLicense };

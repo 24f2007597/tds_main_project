@@ -6,7 +6,7 @@ import('dotenv').config({ path : './secrets.env' });
 const GEMINI_API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-async function modifyCode(newBrief, repoDir, checks) {
+export async function modifyCode(newBrief, repoDir, checks) {
     // Read current file contents
     const files = ['index.html', 'script.js', 'style.css', 'README.md'];
     let currentFilesContent = '';
@@ -120,5 +120,3 @@ Example format:
         throw error;
     }
 }
-
-module.exports = { modifyCode };

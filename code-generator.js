@@ -6,7 +6,7 @@ import('dotenv').config({ path : './secrets.env' });
 const GEMINI_API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-async function generateCode(project_brief, repoName, check_procedures) {
+export async function generateCode(project_brief, repoName, check_procedures) {
     const prompt = `You are an expert full-stack web developer specializing in creating runnable, single-page applications.
 
 Your task is to generate a complete project based on the brief and importments below.
@@ -108,5 +108,3 @@ Example format:
         throw error;
     }
 }
-
-module.exports = { generateCode };

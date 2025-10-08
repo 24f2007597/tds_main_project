@@ -1,4 +1,4 @@
-async function enablePages(octokit, owner, repoName) {
+export async function enablePages(octokit, owner, repoName) {
     try {
         const response = await octokit.rest.repos.createPagesSite({
             owner,
@@ -15,5 +15,3 @@ async function enablePages(octokit, owner, repoName) {
         console.error('Error enabling GitHub Pages:', error);
     }
 }
-
-module.exports = { enablePages };
