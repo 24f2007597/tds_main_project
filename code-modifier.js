@@ -6,18 +6,36 @@ require('dotenv').config({ path : './secrets.env' });
 const GEMINI_API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-async function generateCode(project_brief, repoName, check_procedures) {
+async function modifyCode(newBrief, repoDir, checks) {
+    // Read current file contents
+    const files = ['index.html', 'script.js', 'style.css', 'README.md'];
+    let currentFilesContent = '';
+    for (const file of files) {
+        const filePath = path.join(repoDir, file);
+        let content = '';
+        try {
+            content = await fs.promises.readFile(filePath, 'utf8');
+        } catch (err) {
+            content = '[File not found]';
+        }
+        currentFilesContent += `\n---\n${file}:\n${content}\n`;
+    }
+
+    // Build prompt with current files
     const prompt = `You are an expert full-stack web developer specializing in creating runnable, single-page applications.
 
-Your task is to generate a complete project based on the brief and requirements below.
+Your task is to modify the existing project based on the new brief and requirements below.
 
 ## CONTEXT
 Project Brief:
-${project_brief}
+${newBrief}
 
 Evaluation Checks:
 The final application must be able to pass these checks:
-${check_procedures}
+${checks}
+
+## EXISTING FILES
+${currentFilesContent}
 
 ## TECHNICAL REQUIREMENTS
 Architecture: The entire application MUST be static and run 100% in the client's browser.
@@ -37,7 +55,7 @@ script.js: The client-side JavaScript logic.
 
 style.css: The CSS styles.
 
-README.md: A simple README file explaining what the app does based on the project brief.
+README.md: A simple README file explaining what the updated app does based on the project brief.
 
 ## OUTPUT FORMAT
 You MUST return the output as a single, VALID JSON array of objects. Each object must have a fileName key and a code key.
@@ -72,16 +90,16 @@ Example format:
         'Content-Type': 'application/json',
     };
 
+    if (!GEMINI_API_KEY) {
+        throw new Error('GEMINI_API_KEY is not set in environment variables.');
+    }
+
     try {
-        if (!GEMINI_API_KEY) {
-            throw new Error('AI_TOKEN is not set in environment variables.');
-        }
         const response = await axios.post(
             `${GEMINI_API_ENDPOINT}?key=${GEMINI_API_KEY}`,
             data,
             { headers }
         );
-        // Gemini's response format
         const responseText = response.data.candidates[0].content.parts[0].text;
         const startIndex = responseText.indexOf('[');
         const endIndex = responseText.lastIndexOf(']');
@@ -89,24 +107,18 @@ Example format:
             throw new Error('Invalid response format from Gemini API.');
         }
         const jsonString = responseText.substring(startIndex, endIndex + 1);
-
         const generatedFiles = JSON.parse(jsonString);
 
-        const parentDir = path.dirname(__dirname);
-        const outputDir = path.join(parentDir, 'generated-apps', repoName);
-        await fs.promises.mkdir(outputDir, { recursive: true });
-
+        // Update files in place
         for (const file of generatedFiles) {
-            const filePath = path.join(outputDir, file.fileName);
-            await fs.promises.mkdir(path.dirname(filePath), { recursive: true });
+            const filePath = path.join(repoDir, file.fileName);
             await fs.promises.writeFile(filePath, file.code);
-            console.log(`Generated ${filePath}`);
+            console.log(`Updated ${filePath}`);
         }
-    } 
-    catch (error) {
-        console.error('Error generating code:', error.message);
+    } catch (error) {
+        console.error('Error modifying code:', error.message);
         throw error;
     }
 }
 
-module.exports = { generateCode };
+module.exports = { modifyCode };

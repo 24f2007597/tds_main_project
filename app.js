@@ -8,13 +8,16 @@ const path = require('path');
 require('dotenv').config({ path : './secrets.env' });
 const app = express();
 const { decodeAttachments } = require('./decodeAttachments');
+const { modifyCode } = require('./code-modifier');
+const axios = require('axios');
+const e = require('express');
 
 const token = process.env.PAT_TOKEN;
 
 app.use(express.json());
 
 app.post('/create-app', async (req, res) => {
-    const { secret, task, brief, checks, attachments } = req.body;
+    const { email, secret, task, brief, checks, attachments, evaluation_url, round, nonce } = req.body;
     repoName = task.toLowerCase().trim();
 
     if (secret == process.env.STUDENT_SECRET) {
@@ -25,25 +28,50 @@ app.post('/create-app', async (req, res) => {
                 const parentDir = path.dirname(__dirname);
                 const cloneDir = path.join(parentDir, 'generated-apps', repoName);
 
-                await generateCode(brief, repoName, checks);
-                await decodeAttachments(attachments, repoName);
-                const repo = await createRepo(token, repoName);
-                const execOptions = { cwd: cloneDir}
+                if (round == 1) {
+                    await generateCode(brief, repoName, checks);
+                    await decodeAttachments(attachments, repoName);
+                    const repo = await createRepo(token, repoName);
+                    const execOptions = { cwd: cloneDir}
 
-                execSync('git init', execOptions);
-                execSync('git remote add origin "' + repo.clone_url + '"', execOptions);
+                    execSync('git init', execOptions);
+                    execSync('git remote add origin "' + repo.clone_url + '"', execOptions);
 
-                await addLicense();
+                    addLicense();
 
-                execSync('git add .', execOptions);
-                execSync('git commit -m "Commit with generated code"', execOptions);
-                execSync('git branch -M main', execOptions);
+                    execSync('git add .', execOptions);
+                    execSync('git commit -m "Commit with generated code"', execOptions);
+                    execSync('git branch -M main', execOptions);
 
-                execSync('git push -u origin main', execOptions);
-                console.log('Code pushed to GitHub repository.');
+                    execSync('git push -u origin main', execOptions);
+                    console.log('Code pushed to GitHub repository.');
 
-                await enablePages(new (require("@octokit/rest").Octokit)({ auth: token }), repo.owner, repo.name);
+                    pages_url = await enablePages(new (require("@octokit/rest").Octokit)({ auth: token }), repo.owner, repo.name);                
+                }
+                
+                if (round == 2) {
+                    await modifyCode(brief, cloneDir, checks);
+                    const execOptions = { cwd: cloneDir}
 
+                    execSync('git add .', execOptions);
+                    execSync('git commit -m "Commit with modified code"', execOptions);
+                    execSync('git push -u origin main', execOptions);
+                    console.log('Modified code pushed to GitHub repository.');
+                }
+
+                if (evaluation_url) {
+                    const evalPayload = {
+                            email: email,
+                            task: task,
+                            round: round,
+                            nonce: nonce,
+                            repo_url: repo.html_url,
+                            commit_sha: execSync('git rev-parse HEAD').toString().trim(),
+                            pages_url: pages_url
+                    };
+                    await postWithRetry(evaluation_url, evalPayload);
+                }
+                    
             } catch (error) {
                 console.error(error);
             }
