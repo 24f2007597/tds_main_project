@@ -13,6 +13,7 @@ const axios = require('axios');
 const e = require('express');
 
 const token = process.env.PAT_TOKEN;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
@@ -48,7 +49,7 @@ app.post('/create-app', async (req, res) => {
 
                     pages_url = await enablePages(new (require("@octokit/rest").Octokit)({ auth: token }), repo.owner, repo.name);                
                 }
-                
+
                 if (round == 2) {
                     await modifyCode(brief, cloneDir, checks);
                     const execOptions = { cwd: cloneDir}
@@ -81,6 +82,6 @@ app.post('/create-app', async (req, res) => {
     res.status(401).json({ message: 'Invalid secret' });
 });
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
     console.log('Server started on port 3000');
 });
