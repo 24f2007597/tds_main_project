@@ -1,10 +1,9 @@
 ---
-title: {{title}}
-emoji: {{emoji}}
-colorFrom: {{colorFrom}}
-colorTo: {{colorTo}}
-sdk: {{sdk}}
-sdk_version: "{{sdkVersion}}"
-app_file: app.py
+title: "tds_main_project"
+emoji: 🚀
+colorFrom: indigo
+colorTo: purple
+sdk: docker
+app_file: Dockerfile
 pinned: false
 ---
