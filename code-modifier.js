@@ -1,7 +1,7 @@
-const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
-require('dotenv').config({ path : './secrets.env' });
+const axios = import('axios');
+const fs = import('fs');
+const path = import('path');
+import('dotenv').config({ path : './secrets.env' });
 
 const GEMINI_API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -24,7 +24,7 @@ async function modifyCode(newBrief, repoDir, checks) {
     // Build prompt with current files
     const prompt = `You are an expert full-stack web developer specializing in creating runnable, single-page applications.
 
-Your task is to modify the existing project based on the new brief and requirements below.
+Your task is to modify the existing project based on the new brief and importments below.
 
 ## CONTEXT
 Project Brief:
@@ -37,7 +37,7 @@ ${checks}
 ## EXISTING FILES
 ${currentFilesContent}
 
-## TECHNICAL REQUIREMENTS
+## TECHNICAL importMENTS
 Architecture: The entire application MUST be static and run 100% in the client's browser.
 
 No Backend: There must be absolutely NO backend code. Do not use Node.js, Express, or any server-side logic.

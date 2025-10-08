@@ -1,16 +1,16 @@
-const express = require('express');
-const { createRepo } = require('./createRepo');
-const { addLicense } = require('./add-license');
-const { execSync } = require('child_process');
-const { enablePages } = require('./enable-pages');
-const { generateCode } = require('./code-generator');
-const path = require('path');
-require('dotenv').config({ path : './secrets.env' });
+const express = import('express');
+const { createRepo } = import('./createRepo');
+const { addLicense } = import('./add-license');
+const { execSync } = import('child_process');
+const { enablePages } = import('./enable-pages');
+const { generateCode } = import('./code-generator');
+const path = import('path');
+import('dotenv').config({ path : './secrets.env' });
 const app = express();
-const { decodeAttachments } = require('./decodeAttachments');
-const { modifyCode } = require('./code-modifier');
-const axios = require('axios');
-const e = require('express');
+const { decodeAttachments } = import('./decodeAttachments');
+const { modifyCode } = import('./code-modifier');
+const axios = import('axios');
+const e = import('express');
 
 const token = process.env.PAT_TOKEN;
 const PORT = process.env.PORT || 3000;
@@ -47,7 +47,7 @@ app.post('/create-app', async (req, res) => {
                     execSync('git push -u origin main', execOptions);
                     console.log('Code pushed to GitHub repository.');
 
-                    pages_url = await enablePages(new (require("@octokit/rest").Octokit)({ auth: token }), repo.owner, repo.name);                
+                    pages_url = await enablePages(new (import("@octokit/rest").Octokit)({ auth: token }), repo.owner, repo.name);                
                 }
 
                 if (round == 2) {

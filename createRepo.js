@@ -1,4 +1,4 @@
-const {Octokit} = require("@octokit/rest");
+const {Octokit} = import("@octokit/rest");
 
 async function createRepo(token, repoName) {
     const octokit = new Octokit({

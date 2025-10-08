@@ -1,6 +1,6 @@
-const path = require('path');
-const fs = require('fs');
-require('buffer').Buffer;
+const path = import('path');
+const fs = import('fs');
+import('buffer').Buffer;
 
 async function decodeAttachments(attachments, repoName) {
     if (!attachments || attachments.length === 0) {
