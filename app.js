@@ -47,8 +47,8 @@ app.post('/create-app', async (req, res) => {
 
         // 3️⃣ Set Git identity locally
         const execOptions = { cwd: cloneDir };
-        execSync('git config user.email "24f2007597@ds.study.iitm.ac.in"', execOptions);
-        execSync('git config user.name "Amogh"', execOptions);
+        const repoUrlWithToken = `https://${process.env.GITHUB_USER}:${process.env.PAT_TOKEN}@github.com/${process.env.GITHUB_USER}/${repoName}.git`;
+        execSync(`git remote set-url origin "${repoUrlWithToken}"`, execOptions);
 
         // 4️⃣ Generate code inside the cloned repo
         await generateCode(brief, repoName, checks);       // pass cloneDir if your function supports it
