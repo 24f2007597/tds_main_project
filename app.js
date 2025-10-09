@@ -19,7 +19,7 @@ app.use(express.json());
 
 app.post('/create-app', async (req, res) => {
     const { email, secret, task, brief, checks, attachments, evaluation_url, round, nonce } = req.body;
-    repoName = task.toLowerCase().trim();
+    const repoName = task.toLowerCase().trim();
 
     if (secret == process.env.STUDENT_SECRET) {
         res.status(200).json({ message: 'Secret is valid' });
