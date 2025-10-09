@@ -7,7 +7,6 @@ import { generateCode } from './code-generator.js';
 import { enablePages } from './enable-pages.js';
 import * as path from "path";
 import dotenv from 'dotenv';
-dotenv.config({ path : './secrets.env' });
 const app = express();
 import { modifyCode } from './code-modifier.js';
 import { decodeAttachments } from './decodeAttachments.js';
@@ -15,6 +14,10 @@ import { postWithRetry } from './postWithRetry.js';
 
 const token = process.env.PAT_TOKEN;
 const PORT = process.env.PORT || 3000;
+
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: './secrets.env' });
+}
 
 app.use(express.json());
 
@@ -83,4 +86,6 @@ app.post('/create-app', async (req, res) => {
     }
 });
 
-export default app;
+app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+});

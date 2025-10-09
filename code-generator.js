@@ -2,8 +2,11 @@ import axios from 'axios';
 import fs from 'fs';
 import * as path from "path";
 import dotenv from 'dotenv';
-dotenv.config({ path : './secrets.env' });
 import { fileURLToPath } from "url";
+
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: './secrets.env' });
+}
 
 const GEMINI_API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
