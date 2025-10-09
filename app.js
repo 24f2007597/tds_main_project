@@ -1,14 +1,14 @@
 const express = import('express');
-const { createRepo } = import('./createRepo');
-const { addLicense } = import('./add-license');
+const { createRepo } = import('./createRepo.js');
+const { addLicense } = import('./add-license.js');
 const { execSync } = import('child_process');
-const { enablePages } = import('./enable-pages');
-const { generateCode } = import('./code-generator');
+const { enablePages } = import('./enable-pages.js');
+const { generateCode } = import('./code-generator.js');
 const path = import('path');
 import('dotenv').config({ path : './secrets.env' });
 const app = express();
-const { decodeAttachments } = import('./decodeAttachments');
-const { modifyCode } = import('./code-modifier');
+const { decodeAttachments } = import('./decodeAttachments.js');
+const { modifyCode } = import('./code-modifier.js');
 const axios = import('axios');
 const e = import('express');
 
