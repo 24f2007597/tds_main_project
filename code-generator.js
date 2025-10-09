@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 dotenv.config({ path : './secrets.env' });
+import { fileURLToPath } from "url";
 
 const GEMINI_API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -74,6 +75,9 @@ Example format:
     };
 
     try {
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+        
         if (!GEMINI_API_KEY) {
             throw new Error('AI_TOKEN is not set in environment variables.');
         }

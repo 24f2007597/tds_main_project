@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from "url";
 
-export function addLicense() {
+export function addLicense(repoName) {
     try {
         const year = new Date().getFullYear();
         const licenseText = `MIT License
@@ -25,6 +26,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.`;
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+        
         const parentDir = path.dirname(__dirname);
         const cloneDir = path.join(parentDir, 'generated-apps', repoName);
 

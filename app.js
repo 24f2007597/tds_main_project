@@ -1,5 +1,5 @@
 import express from 'express';
-import axios from 'axios';
+import { fileURLToPath } from "url";
 const { createRepo } = import('./createRepo.js');
 const { addLicense } = import('./add-license.js');
 import { execSync } from 'child_process';
@@ -20,6 +20,8 @@ app.use(express.json());
 app.post('/create-app', async (req, res) => {
     const { email, secret, task, brief, checks, attachments, evaluation_url, round, nonce } = req.body;
     const repoName = task.toLowerCase().trim();
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
 
     if (secret == process.env.STUDENT_SECRET) {
         res.status(200).json({ message: 'Secret is valid' });
@@ -38,7 +40,7 @@ app.post('/create-app', async (req, res) => {
                     execSync('git init', execOptions);
                     execSync('git remote add origin "' + repo.clone_url + '"', execOptions);
 
-                    addLicense();
+                    addLicense(repoName);
 
                     execSync('git add .', execOptions);
                     execSync('git commit -m "Commit with generated code"', execOptions);
