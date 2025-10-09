@@ -1,5 +1,5 @@
-const fs = import('fs');
-const path = import('path');
+import fs from 'fs';
+import path from 'path';
 
 export function addLicense() {
     try {

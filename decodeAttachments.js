@@ -1,6 +1,7 @@
-const path = import('path');
-const fs = import('fs');
-import('buffer').Buffer;
+import fs from 'fs';
+import path from 'path';
+import { Buffer } from 'buffer';
+
 
 export async function decodeAttachments(attachments, repoName) {
     if (!attachments || attachments.length === 0) {

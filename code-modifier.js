@@ -1,6 +1,6 @@
-const axios = import('axios');
-const fs = import('fs');
-const path = import('path');
+import axios from 'axios';
+import fs from 'fs';
+import path from 'path';
 import dotenv from 'dotenv';
 dotenv.config({ path : './secrets.env' });
 
