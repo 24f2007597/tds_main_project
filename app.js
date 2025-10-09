@@ -1,16 +1,17 @@
 import express from 'express';
 import { fileURLToPath } from "url";
-const { createRepo } = import('./createRepo.js');
-const { addLicense } = import('./add-license.js');
+import { createRepo } from './createRepo.js';
+import { addLicense } from './add-license.js';
 import { execSync } from 'child_process';
-const { enablePages } = import('./enable-pages.js');
-const { generateCode } = import('./code-generator.js');
+import { generateCode } from './code-generator.js';
+import { enablePages } from './enablePages.js';
 import * as path from "path";
 import dotenv from 'dotenv';
 dotenv.config({ path : './secrets.env' });
 const app = express();
-const { decodeAttachments } = import('./decodeAttachments.js');
-const { modifyCode } = import('./code-modifier.js');
+import { modifyCode } from './code-modifier.js';
+import { decodeAttachments } from './decodeAttachments.js';
+import { postWithRetry } from './postWithRetry.js';
 
 const token = process.env.PAT_TOKEN;
 const PORT = process.env.PORT || 3000;
