@@ -19,5 +19,3 @@ export async function postWithRetry(url, payload, maxRetries = 5) {
         }
     }
 }
-
-module.exports = { postWithRetry };
