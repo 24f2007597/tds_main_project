@@ -55,6 +55,10 @@ app.post('/create-app', async (req, res) => {
         await decodeAttachments(attachments, repoName);     // write attachments into cloneDir
         addLicense(repoName);                                // create LICENSE in repo
 
+        execSync('git config --global user.email "24f2007597@ds.study.iitm.ac.in"', execOptions);
+        execSync('git config --global user.name "Code Generator"', execOptions);
+
+
         // 5️⃣ Commit & push
         execSync('git add .', execOptions);
         execSync('git commit -m "Commit with generated code"', execOptions);
