@@ -1,6 +1,6 @@
 import axios from 'axios';
 import fs from 'fs';
-import path from 'path';
+import * as path from "path";
 import dotenv from 'dotenv';
 dotenv.config({ path : './secrets.env' });
 import { fileURLToPath } from "url";

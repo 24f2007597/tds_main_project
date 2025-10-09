@@ -5,7 +5,7 @@ const { addLicense } = import('./add-license.js');
 import { execSync } from 'child_process';
 const { enablePages } = import('./enable-pages.js');
 const { generateCode } = import('./code-generator.js');
-const path = import('path');
+import * as path from "path";
 import dotenv from 'dotenv';
 dotenv.config({ path : './secrets.env' });
 const app = express();

@@ -1,5 +1,5 @@
 import fs from 'fs';
-import path from 'path';
+import * as path from "path";
 import { fileURLToPath } from "url";
 
 export function addLicense(repoName) {
