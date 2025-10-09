@@ -35,27 +35,37 @@ app.post('/create-app', async (req, res) => {
     res.status(200).json({ message: 'Secret is valid' });
 
     try {
-        const parentDir = path.dirname(__dirname);
-        const cloneDir = path.join(parentDir, 'generated-apps', repoName);
+    const parentDir = path.dirname(__dirname);
+    const cloneDir = path.join(parentDir, 'generated-apps', repoName);
 
-        if (round == 1) {
-            await generateCode(brief, repoName, checks);
-            await decodeAttachments(attachments, repoName);
-            const repo = await createRepo(token, repoName);
+    if (round === 1) {
+        // 1️⃣ Create GitHub repo
+        const repo = await createRepo(token, repoName);
 
-            const execOptions = { cwd: cloneDir };
-            execSync('git init', execOptions);
-            execSync('git remote add origin "' + repo.clone_url + '"', execOptions);
-            addLicense(repoName);
+        // 2️⃣ Clone empty repo locally
+        execSync(`git clone "${repo.clone_url}" "${cloneDir}"`);
 
-            execSync('git add .', execOptions);
-            execSync('git commit -m "Commit with generated code"', execOptions);
-            execSync('git branch -M main', execOptions);
-            execSync('git push -u origin main', execOptions);
-            console.log('Code pushed to GitHub repository.');
+        // 3️⃣ Set Git identity locally
+        const execOptions = { cwd: cloneDir };
+        execSync('git config user.email "24f2007597@ds.study.iitm.ac.in"', execOptions);
+        execSync('git config user.name "Amogh"', execOptions);
 
-            const octokit = new (import("@octokit/rest").Octokit)({ auth: token });
-            pages_url = await enablePages(octokit, repo.owner, repo.name);
+        // 4️⃣ Generate code inside the cloned repo
+        await generateCode(brief, repoName, checks);       // pass cloneDir if your function supports it
+        await decodeAttachments(attachments, repoName);     // write attachments into cloneDir
+        addLicense(repoName);                                // create LICENSE in repo
+
+        // 5️⃣ Commit & push
+        execSync('git add .', execOptions);
+        execSync('git commit -m "Commit with generated code"', execOptions);
+        execSync('git branch -M main', execOptions);
+        execSync('git push -u origin main', execOptions);
+
+        console.log('Code pushed to GitHub repository.');
+
+        // 6️⃣ Enable GitHub Pages
+        const octokit = new (await import("@octokit/rest")).Octokit({ auth: token });
+        pages_url = await enablePages(octokit, repo.owner, repo.name);
         }
 
         if (round == 2) {
