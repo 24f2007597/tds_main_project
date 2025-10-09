@@ -83,6 +83,4 @@ app.post('/create-app', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log('Server started on port 3000');
-});
+export default app;
