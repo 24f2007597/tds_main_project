@@ -4,7 +4,7 @@ import { createRepo } from './createRepo.js';
 import { addLicense } from './add-license.js';
 import { execSync } from 'child_process';
 import { generateCode } from './code-generator.js';
-import { enablePages } from './enablePages.js';
+import { enablePages } from './enable-pages.js';
 import * as path from "path";
 import dotenv from 'dotenv';
 dotenv.config({ path : './secrets.env' });
