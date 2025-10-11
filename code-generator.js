@@ -100,8 +100,7 @@ Example format:
 
         const generatedFiles = JSON.parse(jsonString);
 
-        const parentDir = path.dirname(__dirname);
-        const outputDir = path.join(parentDir, 'generated-apps', repoName);
+        const outputDir = path.join(__dirname, 'generated-apps', repoName);
         await fs.promises.mkdir(outputDir, { recursive: true });
 
         for (const file of generatedFiles) {

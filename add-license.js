@@ -29,8 +29,7 @@ SOFTWARE.`;
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = path.dirname(__filename);
         
-        const parentDir = path.dirname(__dirname);
-        const cloneDir = path.join(parentDir, 'generated-apps', repoName);
+        const cloneDir = path.join(__dirname, 'generated-apps', repoName);
 
         const filePath = path.join(cloneDir, 'LICENSE');
 

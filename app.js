@@ -39,8 +39,8 @@ app.post('/create-app', async (req, res) => {
     const cloneDir = path.join(__dirname, 'generated-apps', repoName);
 
     // Ensure the 'generated-apps' directory exists
-    if (!fs.existsSync(path.join(parentDir, 'generated-apps'))) {
-        fs.mkdirSync(path.join(parentDir, 'generated-apps'));
+    if (!fs.existsSync(path.join(__dirname, 'generated-apps'))) {
+        fs.mkdirSync(path.join(__dirname, 'generated-apps'));
     }
 
     if (round === 1) {
