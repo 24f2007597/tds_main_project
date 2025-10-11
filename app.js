@@ -36,8 +36,7 @@ app.post('/create-app', async (req, res) => {
     res.status(200).json({ message: 'Secret is valid' });
 
     try {
-    const parentDir = path.dirname(__dirname);
-    const cloneDir = path.join(parentDir, 'generated-apps', repoName);
+    const cloneDir = path.join(__dirname, 'generated-apps', repoName);
 
     // Ensure the 'generated-apps' directory exists
     if (!fs.existsSync(path.join(parentDir, 'generated-apps'))) {
