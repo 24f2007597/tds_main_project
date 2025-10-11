@@ -6,6 +6,7 @@ import { execSync } from 'child_process';
 import { generateCode } from './code-generator.js';
 import { enablePages } from './enable-pages.js';
 import * as path from "path";
+import * as fs from "fs";
 import dotenv from 'dotenv';
 const app = express();
 import { modifyCode } from './code-modifier.js';
@@ -38,6 +39,11 @@ app.post('/create-app', async (req, res) => {
     const parentDir = path.dirname(__dirname);
     const cloneDir = path.join(parentDir, 'generated-apps', repoName);
 
+    // Ensure the 'generated-apps' directory exists
+    if (!fs.existsSync(path.join(parentDir, 'generated-apps'))) {
+        fs.mkdirSync(path.join(parentDir, 'generated-apps'));
+    }
+
     if (round === 1) {
         // 1️⃣ Create GitHub repo
         const repo = await createRepo(token, repoName);
@@ -55,8 +61,8 @@ app.post('/create-app', async (req, res) => {
         await decodeAttachments(attachments, repoName);     // write attachments into cloneDir
         addLicense(repoName);                                // create LICENSE in repo
 
-        execSync('git config --global user.email "24f2007597@ds.study.iitm.ac.in"', execOptions);
-        execSync('git config --global user.name "Code Generator"', execOptions);
+        execSync('git config user.email "24f2007597@ds.study.iitm.ac.in"', execOptions);
+        execSync('git config user.name "Code Generator"', execOptions);
 
 
         // 5️⃣ Commit & push
@@ -73,9 +79,17 @@ app.post('/create-app', async (req, res) => {
         }
 
         if (round == 2) {
+            // If the repo doesn't exist locally, clone it.
+            if (!fs.existsSync(cloneDir)) {
+                const repoUrl = `https://${process.env.GITHUB_USER}:${process.env.PAT_TOKEN}@github.com/${process.env.GITHUB_USER}/${repoName}.git`;
+                execSync(`git clone "${repoUrl}" "${cloneDir}"`);
+            }
             await modifyCode(brief, cloneDir, checks);
             const execOptions = { cwd: cloneDir };
-
+            const repoUrlWithToken = `https://${process.env.GITHUB_USER}:${process.env.PAT_TOKEN}@github.com/${process.env.GITHUB_USER}/${repoName}.git`;
+            execSync(`git remote set-url origin "${repoUrlWithToken}"`, execOptions);
+            execSync('git config user.email "24f2007597@ds.study.iitm.ac.in"', execOptions);
+            execSync('git config user.name "Code Generator"', execOptions);
             execSync('git add .', execOptions);
             execSync('git commit -m "Commit with modified code"', execOptions);
             execSync('git push -u origin main', execOptions);
