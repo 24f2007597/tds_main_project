@@ -78,7 +78,8 @@ Example format:
 "fileName": "style.css",
 "code": "body { font-family: sans-serif; }"
 }
-]`;
+]
+CRITICAL: Your entire response must ONLY be the JSON text. Do NOT include any conversational text, greetings, explanations, or markdown formatting like ``json. Your response must start with [ and end with ].`;
 
     const data = {
         contents: [
