@@ -9,6 +9,9 @@ export async function decodeAttachments(attachments, repoName) {
         return;
     }
 
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+
     const outputDir = path.join(__dirname, 'generated-apps', repoName, 'attachments');
     console.log('Output directory for attachments:', outputDir);
     await fs.promises.mkdir(outputDir, { recursive: true });
