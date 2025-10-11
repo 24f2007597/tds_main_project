@@ -84,7 +84,7 @@ CRITICAL: Your entire response must ONLY be the JSON text. Do NOT include any co
         const __dirname = path.dirname(__filename);
         
         if (!GEMINI_API_KEY) {
-            throw new Error('AI_TOKEN is not set in environment variables.');
+            throw new Error('GEMINI_API_KEY is not set in environment variables.');
         }
         const response = await axios.post(
             `${GEMINI_API_ENDPOINT}?key=${GEMINI_API_KEY}`,
