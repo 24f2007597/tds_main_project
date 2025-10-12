@@ -10,7 +10,7 @@ export async function enablePages(octokit, owner, repoName) {
                 path: '/',
             },
         });
-
+        console.log(response.data.url)
         const isLive = await checkUrl(response.data.url);
         if (isLive) {
             console.log('GitHub Pages enabled successfully.');

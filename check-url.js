@@ -8,8 +8,6 @@ export async function checkUrl(url, duration = 120000, delay = 4000) {
       if (response.ok) {
         console.log(`✅ Success! URL is live and returned status ${response.status}.`);
         return true;
-      } else {
-        console.log(`...URL returned status ${response.status}. Retrying...`);
       }
     } catch (error) {
       console.log(`...Request failed: ${error.message}. Retrying...`);
