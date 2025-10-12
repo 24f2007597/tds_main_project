@@ -103,6 +103,8 @@ Strictly include only the JSON array. No other text. No markdown formatting. No 
 
         const sanitizedJsonString = jsonString.replace(/`/g, '\\`');
 
+        console.log('Generated code:', sanitizedJsonString);
+
         const generatedFiles = JSON.parse(sanitizedJsonString);
 
         const outputDir = path.join(__dirname, 'generated-apps', repoName);

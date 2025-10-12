@@ -112,7 +112,9 @@ Strictly include only the JSON array. No other text. No markdown formatting. No 
             throw new Error('Invalid response format from Gemini API.');
         }
         const jsonString = responseText.substring(startIndex, endIndex + 1);
-        const generatedFiles = JSON.parse(jsonString);
+        const sanitizedJsonString = jsonString.replace(/\\n/g, '\n');
+        console.log(sanitizedJsonString);
+        const generatedFiles = JSON.parse(sanitizedJsonString);
 
         // Update files in place
         for (const file of generatedFiles) {
