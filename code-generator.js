@@ -3,7 +3,7 @@ import fs from 'fs';
 import * as path from "path";
 import dotenv from 'dotenv';
 import { fileURLToPath } from "url";
-import * as json5 from "json5";
+import { parse } from 'json5';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: './secrets.env' });
@@ -111,7 +111,7 @@ CRITICAL: Your entire response must ONLY be the JSON text. Do NOT include any co
 
         jsonBlock = jsonBlock.replace(/`/g, '\\`');
 
-        const generatedFiles = json5.parse(jsonBlock);
+        const generatedFiles = parse(jsonBlock);
 
         const outputDir = path.join(__dirname, 'generated-apps', repoName);
         await fs.promises.mkdir(outputDir, { recursive: true });

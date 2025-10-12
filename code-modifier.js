@@ -2,7 +2,7 @@ import axios from 'axios';
 import fs from 'fs';
 import * as path from "path";
 import dotenv from 'dotenv';
-import * as json5 from "json5";
+import { parse } from 'json5';
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: './secrets.env' });
 }
@@ -124,7 +124,7 @@ CRITICAL: Your entire response must ONLY be the JSON text. Do NOT include any co
 
         jsonBlock = jsonBlock.replace(/`/g, '\\`');
 
-        const generatedFiles = json5.parse(jsonBlock);
+        const generatedFiles = parse(jsonBlock);
         
         // Update files in place
         for (const file of generatedFiles) {
