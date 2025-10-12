@@ -96,6 +96,10 @@ app.post('/create-app', async (req, res) => {
         }
 
         if (evaluation_url) {
+            if (round == 2) {
+                console.log('Sleeping for 2 minutes before round 2 evaluation...');
+                time.sleep(120);
+            }
             const evalPayload = {
                 email,
                 task,
