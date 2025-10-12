@@ -74,8 +74,7 @@ app.post('/create-app', async (req, res) => {
 
         // 6️⃣ Enable GitHub Pages
         const octokit = new (await import("@octokit/rest")).Octokit({ auth: token });
-        const pages_url = await enablePages(octokit, repo.owner, repo.name);
-        console.log('GitHub Pages enabled at ', pages_url);
+        pages_url = await enablePages(octokit, repo.owner, repo.name);
         }
 
         if (round == 2) {

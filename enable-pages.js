@@ -8,6 +8,7 @@ export async function enablePages(octokit, owner, repoName) {
                 path: '/',
             },
         });
+        console.log('GitHub Pages enabled successfully at', response.data.html_url);
         return response.data.html_url;
     } 
     catch (error) {
