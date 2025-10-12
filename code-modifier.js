@@ -80,7 +80,7 @@ Example format:
 }
 ]
 CRITICAL: Your entire response must ONLY be the JSON text. Do NOT include any conversational text, greetings, explanations, or markdown formatting. Your response must start with [ and end with ].
-Strictly include only the JSON array. No other text. No markdown formatting. No backticks. Give PLAIN TEXT ONLY.`;
+Strictly include only the JSON array. No other text. No markdown formatting. No backticks. Give PLAIN TEXT ONLY. DO ONLY WHAT YOU'RE TOLD.`;
 
     const data = {
         contents: [
