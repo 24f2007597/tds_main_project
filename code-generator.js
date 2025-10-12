@@ -100,7 +100,9 @@ CRITICAL: Your entire response must ONLY be the JSON text. Do NOT include any co
         }
         const jsonString = responseText.substring(startIndex, endIndex + 1);
 
-        const generatedFiles = JSON.parse(jsonString);
+        const sanitizedJsonString = jsonString.replace(/`/g, '\\`');
+
+        const generatedFiles = JSON.parse(sanitizedJsonString);
 
         const outputDir = path.join(__dirname, 'generated-apps', repoName);
         await fs.promises.mkdir(outputDir, { recursive: true });
