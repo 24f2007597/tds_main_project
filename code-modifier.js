@@ -106,16 +106,26 @@ Strictly include only the JSON array. No other text. No markdown formatting. No 
             { headers }
         );
         const responseText = response.data.candidates[0].content.parts[0].text;
-        const startIndex = responseText.indexOf('[');
-        const endIndex = responseText.lastIndexOf(']');
-        if (startIndex === -1 || endIndex === -1) {
-            throw new Error('Invalid response format from Gemini API.');
+        
+        if (!responseText || typeof responseText !== 'string') {
+            throw new Error("AI response is empty or not a string.");
         }
-        const jsonString = responseText.substring(startIndex, endIndex + 1);
-        const sanitizedJsonString = jsonString.replace(/\\n/g, '\n');
-        console.log(sanitizedJsonString);
-        const generatedFiles = JSON.parse(sanitizedJsonString);
 
+        const cleanString = responseText.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '');
+
+        // Step 2: Extract the JSON block (from the now-clean string).
+        const startIndex = cleanString.indexOf('[');
+        const endIndex = cleanString.lastIndexOf(']');
+        if (startIndex === -1 || endIndex === -1) {
+            console.error("The string after deep cleaning was:", cleanString);
+            throw new Error('Could not find a JSON array in the cleaned AI response.');
+        }
+        let jsonBlock = cleanString.substring(startIndex, endIndex + 1);
+
+        jsonBlock = jsonBlock.replace(/`/g, '\\`');
+
+        const generatedFiles = JSON.parse(jsonBlock);
+        
         // Update files in place
         for (const file of generatedFiles) {
             const filePath = path.join(repoDir, file.fileName);
