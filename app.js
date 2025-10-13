@@ -20,6 +20,10 @@ if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: './secrets.env' });
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 app.use(express.json());
 
 app.post('/create-app', async (req, res) => {
@@ -98,7 +102,7 @@ app.post('/create-app', async (req, res) => {
         if (evaluation_url !== '') {
             if (round == 2) {
                 console.log('Sleeping for 2 minutes before round 2 evaluation...');
-                time.sleep(120);
+                await sleep(120);
             }
             const evalPayload = {
                 email,
