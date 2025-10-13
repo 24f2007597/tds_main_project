@@ -31,6 +31,7 @@ app.post('/create-app', async (req, res) => {
     const repoName = task.toLowerCase().trim();
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
+    let pages_url, repoUrlWithToken;
 
     if (secret !== process.env.STUDENT_SECRET) {
         return res.status(401).json({ message: 'Invalid secret' });
@@ -103,7 +104,7 @@ app.post('/create-app', async (req, res) => {
             const execOptions = { cwd: cloneDir };
             if (round == 2) {
                 console.log('Sleeping for 2 minutes before round 2 evaluation...');
-                await sleep(120);
+                await sleep(120000);
             }
             const evalPayload = {
                 email: email,
