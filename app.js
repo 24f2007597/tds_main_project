@@ -95,7 +95,7 @@ app.post('/create-app', async (req, res) => {
             console.log('Modified code pushed to GitHub repository.');
         }
 
-        if (evaluation_url) {
+        if (evaluation_url !== '') {
             if (round == 2) {
                 console.log('Sleeping for 2 minutes before round 2 evaluation...');
                 time.sleep(120);
