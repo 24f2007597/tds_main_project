@@ -120,7 +120,6 @@ app.post('/create-app', async (req, res) => {
 
             const match = repoUrlWithToken.match(/github\.com\/([^\/]+)\/([^\/\.]+)\.git/);
             const username = match[1];
-            const repoName = match[2];
             const pages_url = `https://${username}.github.io/${repoName}/`;
 
             if (evaluation_url !== '') {
