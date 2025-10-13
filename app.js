@@ -100,17 +100,18 @@ app.post('/create-app', async (req, res) => {
         }
 
         if (evaluation_url !== '') {
+            const execOptions = { cwd: cloneDir };
             if (round == 2) {
                 console.log('Sleeping for 2 minutes before round 2 evaluation...');
                 await sleep(120);
             }
             const evalPayload = {
-                email,
-                task,
-                round,
-                nonce,
-                repo_url: repoName.html_url,
-                commit_sha: execSync('git rev-parse HEAD').toString().trim(),
+                email: email,
+                task: task,
+                round: round,
+                nonce: nonce,
+                repo_url: repoUrlWithToken,
+                commit_sha: execSync('git rev-parse HEAD', execOptions).toString().trim(),
                 pages_url
             };
             console.log(evalPayload);
