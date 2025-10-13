@@ -80,25 +80,6 @@ app.post('/create-app', async (req, res) => {
         // 6️⃣ Enable GitHub Pages
         const octokit = new (await import("@octokit/rest")).Octokit({ auth: token });
         const pages_url = await enablePages(octokit, repo.owner, repo.name);
-        }
-
-        if (round == 2) {
-            // If the repo doesn't exist locally, clone it.
-            if (!fs.existsSync(cloneDir)) {
-                const repoUrl = `https://${process.env.GITHUB_USER}:${process.env.PAT_TOKEN}@github.com/${process.env.GITHUB_USER}/${repoName}.git`;
-                execSync(`git clone "${repoUrl}" "${cloneDir}"`);
-            }
-            await modifyCode(brief, cloneDir, checks);
-            const execOptions = { cwd: cloneDir };
-            const repoUrlWithToken = `https://${process.env.GITHUB_USER}:${process.env.PAT_TOKEN}@github.com/${process.env.GITHUB_USER}/${repoName}.git`;
-            execSync(`git remote set-url origin "${repoUrlWithToken}"`, execOptions);
-            execSync('git config user.email "24f2007597@ds.study.iitm.ac.in"', execOptions);
-            execSync('git config user.name "Code Generator"', execOptions);
-            execSync('git add .', execOptions);
-            execSync('git commit -m "Commit with modified code"', execOptions);
-            execSync('git push -u origin main', execOptions);
-            console.log('Modified code pushed to GitHub repository.');
-        }
 
         if (evaluation_url !== '') {
             const execOptions = { cwd: cloneDir };
@@ -113,11 +94,50 @@ app.post('/create-app', async (req, res) => {
                 nonce: nonce,
                 repo_url: repoUrlWithToken,
                 commit_sha: execSync('git rev-parse HEAD', execOptions).toString().trim(),
-                pages_url
+                pages_url: pages_url
             };
             console.log(evalPayload);
             await postWithRetry(evaluation_url, evalPayload);
         }
+    }
+
+    if (round == 2) {
+        // If the repo doesn't exist locally, clone it.
+        if (!fs.existsSync(cloneDir)) {
+            const repoUrl = `https://${process.env.GITHUB_USER}:${process.env.PAT_TOKEN}@github.com/${process.env.GITHUB_USER}/${repoName}.git`;
+            execSync(`git clone "${repoUrl}" "${cloneDir}"`);
+        }
+        await modifyCode(brief, cloneDir, checks);
+        const execOptions = { cwd: cloneDir };
+        const repoUrlWithToken = `https://${process.env.GITHUB_USER}:${process.env.PAT_TOKEN}@github.com/${process.env.GITHUB_USER}/${repoName}.git`;
+        execSync(`git remote set-url origin "${repoUrlWithToken}"`, execOptions);
+        execSync('git config user.email "24f2007597@ds.study.iitm.ac.in"', execOptions);
+        execSync('git config user.name "Code Generator"', execOptions);
+        execSync('git add .', execOptions);
+        execSync('git commit -m "Commit with modified code"', execOptions);
+        execSync('git push -u origin main', execOptions);
+        console.log('Modified code pushed to GitHub repository.');
+
+        const match = repoUrlWithToken.match(/github\.com\/([^\/]+)\/([^\/\.]+)\.git/);
+        const username = match[1];
+        const repoName = match[2];
+        const pages_url = `https://${username}.github.io/${repoName}/`;
+
+        if (evaluation_url !== '') {
+            const execOptions = { cwd: cloneDir };
+            const evalPayload = {
+                email: email,
+                task: task,
+                round: round,
+                nonce: nonce,
+                repo_url: repoUrlWithToken,
+                commit_sha: execSync('git rev-parse HEAD', execOptions).toString().trim(),
+                pages_url: pages_url
+            };
+            console.log(evalPayload);
+            await postWithRetry(evaluation_url, evalPayload);
+        }
+    }
 
     } catch (error) {
         console.error(error);
