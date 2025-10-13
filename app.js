@@ -109,7 +109,7 @@ app.post('/create-app', async (req, res) => {
                 task,
                 round,
                 nonce,
-                repo_url: repo.html_url,
+                repo_url: repoName.html_url,
                 commit_sha: execSync('git rev-parse HEAD').toString().trim(),
                 pages_url
             };
