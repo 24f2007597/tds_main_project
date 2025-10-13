@@ -109,6 +109,7 @@ app.post('/create-app', async (req, res) => {
                 commit_sha: execSync('git rev-parse HEAD').toString().trim(),
                 pages_url
             };
+            console.log(evalPayload);
             await postWithRetry(evaluation_url, evalPayload);
         }
 
