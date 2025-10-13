@@ -14,7 +14,7 @@ export async function enablePages(octokit, owner, repoName) {
         const isLive = await checkUrl(response.data.html_url);
         if (isLive) {
             console.log('GitHub Pages enabled successfully.');
-            return response.data.url;
+            return response.data.html_url;
         }
         else {
             console.log('Failed to enable GitHub Pages.');
